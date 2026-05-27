@@ -1,0 +1,4 @@
+module utils
+singleton Icons Icons.qml
+singleton Paths Paths.qml
+

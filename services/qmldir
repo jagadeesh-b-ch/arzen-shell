@@ -1,0 +1,11 @@
+module services
+singleton Audio Audio.qml
+singleton Bluetooth Bluetooth.qml
+singleton Brightness Brightness.qml
+singleton Hyprland Hyprland.qml
+singleton Network Network.qml
+singleton PopOutManager PopOutManager.qml
+singleton Resources Resources.qml
+singleton Time Time.qml
+singleton Wallpapers Wallpapers.qml
+
