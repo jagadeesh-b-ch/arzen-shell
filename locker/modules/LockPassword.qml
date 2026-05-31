@@ -1,5 +1,4 @@
 import QtQuick
-import QtQuick.Controls
 import QtQuick.Layouts
 import "./../../config"
 import "./../../widgets"
@@ -21,15 +20,6 @@ ColumnLayout {
         inputMethodHints: Qt.ImhSensitiveData
         placeholderText: "Password"
         letterSpacing: 4
-        color: Appearance.defaults.color.contentOnSurfaceInverse
-        placeholderTextColor: Appearance.defaults.color.outlineVariant
-
-        background: Rectangle {
-            color: Appearance.defaults.color.surfaceInverse
-            radius: Appearance.defaults.rounding
-            border.color: parent.activeFocus ? Appearance.defaults.color.primary : Appearance.defaults.color.outline
-            border.width: 1
-        }
 
         onTextChanged: root.context.currentText = text
         onAccepted: root.context.tryUnlock()
@@ -42,21 +32,29 @@ ColumnLayout {
         }
     }
 
-    Label {
-        visible: root.context.showFailure
+    StyledText {
         Layout.alignment: Qt.AlignHCenter
-        Layout.fillWidth: false
-        text: "Incorrect password"
-        color: Appearance.defaults.color.error
-        font.pointSize: Appearance.fontSize.normal
+        Layout.minimumHeight: infoMetrics.height
+        color: Appearance.defaults.color.primary
+        opacity: root.context.unlockInProgress ? 1 : 0
+        text: "Verifying"
+        NumberAnimation on opacity {
+            from: 1; to: 0.3; duration: 600; loops: Animation.Infinite
+            running: root.context.unlockInProgress
+            easing.type: Easing.InOutSine
+        }
     }
 
-    Label {
-        visible: root.context.showError
+    StyledText {
         Layout.alignment: Qt.AlignHCenter
-        Layout.fillWidth: false
-        text: root.context.errorMessage
+        Layout.minimumHeight: infoMetrics.height
         color: Appearance.defaults.color.error
-        font.pointSize: Appearance.fontSize.normal
+        text: root.context.showFailure || root.context.showError ? (root.context.showError ? root.context.errorMessage : "Incorrect password") : ""
+    }
+
+    FontMetrics {
+        id: infoMetrics
+        font.family: Appearance.defaults.fontFamily
+        font.pointSize: Appearance.defaults.fontSize
     }
 }

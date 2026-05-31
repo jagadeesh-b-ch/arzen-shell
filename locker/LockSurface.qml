@@ -11,7 +11,7 @@ import "./../widgets"
 Rectangle {
     id: root
     required property QtObject context
-    color: Appearance.defaults.color.surfaceInverse
+    color: "transparent"
 
     property bool activeState: false
 
@@ -21,10 +21,11 @@ Rectangle {
     Image {
         id: wallpaperImage
         anchors.fill: parent
-        asynchronous: true
         fillMode: Image.PreserveAspectCrop
         sourceSize.width: parent.width
         sourceSize.height: parent.height
+        opacity: status === Image.Ready ? 1 : 0
+        Behavior on opacity { NumberAnimation { duration: 500; easing.type: Easing.OutExpo } }
     }
 
     Loader {
