@@ -12,7 +12,7 @@ Part of `~/.config` dotfiles repo (see `../AGENTS.md` for broader context).
 ## Verifying changes
 After modifying any UI file (modules, widgets, services, config), run the relevant command to check for QML errors:
 - Shell changes: `quickshell` (kill existing instance first)
-- Locker changes: `quickshell -p ~/Projects/arzen-shell/lock.qml`
+- Locker changes: `quickshell -p ~/Projects/arzen-shell/lock.qml` (use `nohup ... & disown` — do NOT kill the locker process, as Hyprland treats that as a crash and locks the user out; the user will unlock it manually)
 Fix any errors reported before considering the change complete.
 
 ## Import conventions

@@ -75,10 +75,13 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
 
-        BigClock {}
+        BigClock {
+            Layout.alignment: Qt.AlignHCenter
+        }
 
         LockPassword {
             id: passwordComponent
+            Layout.alignment: Qt.AlignHCenter
             context: root.context
         }
     }

@@ -8,6 +8,7 @@ MaterialIconPadded MaterialIconPadded.qml
 MenuOptionList MenuOptionList.qml
 PopOutWindow PopOutWindow.qml
 StyledText StyledText.qml
+StyledTextField StyledTextField.qml
 StyledTextPadded StyledTextPadded.qml
 StyledView StyledView.qml
 StyledWindow StyledWindow.qml

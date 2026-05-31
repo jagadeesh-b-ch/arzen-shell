@@ -182,50 +182,45 @@ PanelWindow {
             anchors.margins: Appearance.padding.normal
             spacing: Appearance.spacing.small
 
-            Rectangle {
-                id: searchBox
+            StyledTextField {
+                id: searchInput
                 width: parent.width
-                height: 42
-                radius: Appearance.defaults.rounding
-                color: Appearance.defaults.color.secondaryContainer
+                pointSize: Appearance.fontSize.larger
+                color: Appearance.defaults.color.contentOnSecondaryContainer
+                selectByMouse: true
 
-                TextInput {
-                    id: searchInput
-                    anchors.fill: parent
-                    anchors.leftMargin: Appearance.padding.normal
-                    anchors.rightMargin: Appearance.padding.normal
-                    verticalAlignment: TextInput.AlignVCenter
-                    font.family: Appearance.defaults.fontFamily
-                    font.pointSize: Appearance.fontSize.larger
-                    color: Appearance.defaults.color.contentOnSecondaryContainer
-                    selectByMouse: true
+                background: Rectangle {
+                    color: Appearance.defaults.color.secondaryContainer
+                    radius: Appearance.defaults.rounding
+                    border.color: parent.activeFocus ? Appearance.defaults.color.primary : Appearance.defaults.color.outline
+                    border.width: 1
+                }
 
-                    Keys.onPressed: function (event) {
-                        if ((event.key === Qt.Key_J && (event.modifiers & Qt.ControlModifier)) || event.key === Qt.Key_Down) {
-                            if (selectedIndex < appModel.count - 1) {
-                                selectedIndex++;
-                                listView.positionViewAtIndex(selectedIndex, ListView.Contain);
-                            }
-                            event.accepted = true;
-                        } else if ((event.key === Qt.Key_K && (event.modifiers & Qt.ControlModifier)) || event.key === Qt.Key_Up) {
-                            if (selectedIndex > 0) {
-                                selectedIndex--;
-                                listView.positionViewAtIndex(selectedIndex, ListView.Contain);
-                            }
-                            event.accepted = true;
-                        } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
-                            launchSelected();
-                            event.accepted = true;
-                        } else if (event.key === Qt.Key_Escape) {
-                            popup.visible = false;
-                            event.accepted = true;
+                Keys.onPressed: function (event) {
+                    if ((event.key === Qt.Key_J && (event.modifiers & Qt.ControlModifier)) || event.key === Qt.Key_Down) {
+                        if (selectedIndex < appModel.count - 1) {
+                            selectedIndex++;
+                            listView.positionViewAtIndex(selectedIndex, ListView.Contain);
                         }
+                        event.accepted = true;
+                    } else if ((event.key === Qt.Key_K && (event.modifiers & Qt.ControlModifier)) || event.key === Qt.Key_Up) {
+                        if (selectedIndex > 0) {
+                            selectedIndex--;
+                            listView.positionViewAtIndex(selectedIndex, ListView.Contain);
+                        }
+                        event.accepted = true;
+                    } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
+                        launchSelected();
+                        event.accepted = true;
+                    } else if (event.key === Qt.Key_Escape) {
+                        popup.visible = false;
+                        event.accepted = true;
                     }
+                }
 
-                    onTextChanged: {
-                        selectedIndex = 0;
-                        populateModel(text);
-                    }
+                onTextChanged: {
+                    selectedIndex = 0;
+                    populateModel(text);
                 }
             }
 
@@ -238,7 +233,7 @@ PanelWindow {
             ListView {
                 id: listView
                 width: parent.width
-                height: parent.height - searchBox.height - 1 - Appearance.spacing.small
+                height: parent.height - searchInput.height - 1 - Appearance.spacing.small
                 clip: true
                 model: appModel
                 boundsBehavior: Flickable.StopAtBounds

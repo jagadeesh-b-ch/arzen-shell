@@ -1,7 +1,8 @@
 import QtQuick
-import QtQuick.Controls.Fusion
+import QtQuick.Controls
 import QtQuick.Layouts
 import "./../../config"
+import "./../../widgets"
 
 ColumnLayout {
     id: root
@@ -10,59 +11,34 @@ ColumnLayout {
     required property QtObject context
     property alias passwordField: passwordField
 
-    RowLayout {
-        spacing: Appearance.spacing.normal
+    StyledTextField {
+        id: passwordField
         Layout.topMargin: Appearance.spacing.large
+        Layout.alignment: Qt.AlignHCenter
+        focus: true
+        enabled: !root.context.unlockInProgress
+        echoMode: TextInput.Password
+        inputMethodHints: Qt.ImhSensitiveData
+        placeholderText: "Password"
+        letterSpacing: 4
+        color: Appearance.defaults.color.contentOnSurfaceInverse
+        placeholderTextColor: Appearance.defaults.color.outlineVariant
 
-        TextField {
-            id: passwordField
-            implicitWidth: 320
-            padding: Appearance.padding.large
-            focus: true
-            enabled: !root.context.unlockInProgress
-            echoMode: TextInput.Password
-            inputMethodHints: Qt.ImhSensitiveData
-            placeholderText: "Password"
-            color: Appearance.defaults.color.contentOnSurfaceInverse
-            placeholderTextColor: Appearance.defaults.color.placeholderOnInverse
-
-            background: Rectangle {
-                color: Appearance.defaults.color.surfaceInverseOverlay
-                radius: Appearance.defaults.rounding
-                border.color: Appearance.defaults.color.surfaceInverseBorder
-                border.width: 1
-            }
-
-            onTextChanged: root.context.currentText = text
-            onAccepted: root.context.tryUnlock()
-            Connections {
-                target: root.context
-                function onCurrentTextChanged() {
-                    if (passwordField.text !== root.context.currentText)
-                        passwordField.text = root.context.currentText;
-                }
-            }
+        background: Rectangle {
+            color: Appearance.defaults.color.surfaceInverse
+            radius: Appearance.defaults.rounding
+            border.color: parent.activeFocus ? Appearance.defaults.color.primary : Appearance.defaults.color.outline
+            border.width: 1
         }
 
-        Button {
-            text: "Unlock"
-            padding: Appearance.padding.large
-            focusPolicy: Qt.NoFocus
-            enabled: !root.context.unlockInProgress && root.context.currentText !== ""
-
-            background: Rectangle {
-                color: parent.enabled ? Appearance.defaults.color.primary : Appearance.defaults.color.outline
-                radius: Appearance.defaults.rounding
+        onTextChanged: root.context.currentText = text
+        onAccepted: root.context.tryUnlock()
+        Connections {
+            target: root.context
+            function onCurrentTextChanged() {
+                if (passwordField.text !== root.context.currentText)
+                    passwordField.text = root.context.currentText;
             }
-            contentItem: Text {
-                text: parent.text
-                color: Appearance.defaults.color.contentOnPrimary
-                font.pointSize: Appearance.fontSize.normal
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-            }
-
-            onClicked: root.context.tryUnlock()
         }
     }
 
