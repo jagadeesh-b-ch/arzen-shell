@@ -1,6 +1,8 @@
 import Quickshell
 import Quickshell.Wayland
 import QtQuick
+import "./../config"
+import "./../services"
 
 ShellRoot {
   LockContext {

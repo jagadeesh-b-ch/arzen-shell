@@ -5,8 +5,15 @@ Part of `~/.config` dotfiles repo (see `../AGENTS.md` for broader context).
 ## Entry point
 - `shell.qml` — root `Scope` → `TopBar`
 - Quickshell auto-loads from `~/.config/quickshell/`
-- Run: `quickshell` (reload by restarting process)
+- Run shell: `quickshell`
+- Run locker: `quickshell -p ~/Projects/arzen-shell/lock.qml`
 - No build/lint/test — QML interpreted
+
+## Verifying changes
+After modifying any UI file (modules, widgets, services, config), run the relevant command to check for QML errors:
+- Shell changes: `quickshell` (kill existing instance first)
+- Locker changes: `quickshell -p ~/Projects/arzen-shell/lock.qml`
+Fix any errors reported before considering the change complete.
 
 ## Import conventions
 - Relative imports only: `import "./../services"`, `import "./../../services"`, `import "./../config"`, `import "./../widgets"`

@@ -32,19 +32,18 @@ Singleton {
     }
 
     function updateHyprctlBorders(colors) {
-        var rgba = function (c, a) { return c ? "rgba(" + c.replace("#", "") + a + ")" : ""; };
+        var rgba = function (c, a) {
+            return c ? "rgba(" + c.replace("#", "") + a + ")" : "";
+        };
         var activeColor = rgba(colors.primary, "EE");
         var activeGradient = rgba(colors.primaryContainer, "99");
         var inactiveColor = rgba(colors.surface_variant, "AA");
         if (activeGradient)
-            Quickshell.execDetached(["hyprctl", "eval",
-                "hl.config({ general = { col = { active_border = { colors = { \"" + activeColor + "\", \"" + activeGradient + "\" }, angle = 45 } } } })"]);
+            Quickshell.execDetached(["hyprctl", "eval", "hl.config({ general = { col = { active_border = { colors = { \"" + activeColor + "\", \"" + activeGradient + "\" }, angle = 45 } } } })"]);
         else if (activeColor)
-            Quickshell.execDetached(["hyprctl", "eval",
-                "hl.config({ general = { col = { active_border = \"" + activeColor + "\" } } })"]);
+            Quickshell.execDetached(["hyprctl", "eval", "hl.config({ general = { col = { active_border = \"" + activeColor + "\" } } })"]);
         if (inactiveColor)
-            Quickshell.execDetached(["hyprctl", "eval",
-                "hl.config({ general = { col = { inactive_border = \"" + inactiveColor + "\" } } })"]);
+            Quickshell.execDetached(["hyprctl", "eval", "hl.config({ general = { col = { inactive_border = \"" + inactiveColor + "\" } } })"]);
     }
 
     Component.onCompleted: {
@@ -108,6 +107,7 @@ Singleton {
         readonly property int larger: 15
         readonly property int large: 18
         readonly property int extraLarge: 28
+        readonly property int display: 80
     }
 
     component AnimCurves: QtObject {

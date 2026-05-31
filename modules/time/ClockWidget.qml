@@ -3,7 +3,7 @@ import "./../../services"
 
 StyledView {
     StyledTextPadded {
-        text: Time.time
+        text: Time.dateWithTime
         active: false
         hovered: false
     }

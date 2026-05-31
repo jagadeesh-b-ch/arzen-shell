@@ -1,0 +1,13 @@
+module widgets
+BigClock BigClock.qml
+CachingImage CachingImage.qml
+HorizontalSlider HorizontalSlider.qml
+InteractiveView InteractiveView.qml
+MaterialIcon MaterialIcon.qml
+MaterialIconPadded MaterialIconPadded.qml
+MenuOptionList MenuOptionList.qml
+PopOutWindow PopOutWindow.qml
+StyledText StyledText.qml
+StyledTextPadded StyledTextPadded.qml
+StyledView StyledView.qml
+StyledWindow StyledWindow.qml
