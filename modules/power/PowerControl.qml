@@ -49,7 +49,7 @@ Item {
                 x: Appearance.defaults.hPadding
                 y: Appearance.defaults.vPadding
                 model: [
-                    QtObject { property string icon: "lock"; property string text: "Lock"; property var cmd: ["quickshell", "-p", "/home/jaggu/.config/quickshell/locker/shell.qml"] },
+                    QtObject { property string icon: "lock"; property string text: "Lock"; property var cmd: ["quickshell", "-p", "/home/jaggu/Projects/arzen-shell/lock.qml"] },
                     QtObject { property string icon: "logout"; property string text: "Log off"; property var cmd: ["loginctl", "terminate-user", "$USER"] },
                     QtObject { property string icon: "nightlight"; property string text: "Suspend"; property var cmd: ["systemctl", "suspend"] },
                     QtObject { property string icon: "bedtime"; property string text: "Hibernate"; property var cmd: ["systemctl", "hibernate"] },

@@ -1,12 +1,10 @@
-import Qt.labs.platform
 import QtQuick
 import QtQuick.Effects
 import QtQuick.Layouts
 import Quickshell.Io
-import "./../config"
-import "./../utils"
-import "./modules"
-import "./../widgets"
+import "./../../config"
+import "./../../utils"
+import "./../../widgets"
 
 Rectangle {
     id: root
@@ -15,8 +13,7 @@ Rectangle {
 
     property bool activeState: false
 
-    readonly property url stateDir: `${StandardPaths.standardLocations(StandardPaths.GenericStateLocation)[0]}/archie`
-    readonly property string wallpaperPathFile: `${stateDir}/wallpaper/path.txt`.slice(7)
+    readonly property string wallpaperPathFile: `${Paths.state}/wallpaper/path.txt`.slice(7)
 
     Image {
         id: wallpaperImage
