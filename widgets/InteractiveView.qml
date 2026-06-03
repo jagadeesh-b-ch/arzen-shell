@@ -9,6 +9,8 @@ Rectangle {
     property bool active: false
     property bool hovered: false
     property bool popoutManagerExempt: false
+    property bool frosted: true
+    property bool fillWidth: false
     signal clicked
     signal hover(bool hovered)
     default property alias content: contentLoader.sourceComponent
@@ -17,22 +19,42 @@ Rectangle {
     height: interactiveView.height + (2 * spacing)
 
     radius: Appearance.defaults.rounding
-    color: Appearance.defaults.color.secondaryContainer
+    color: root.frosted ? "transparent" : Appearance.defaults.surfaceColor
+
+    Rectangle {
+        anchors.fill: parent
+        radius: parent.radius
+        color: Appearance.defaults.surfaceColor
+        opacity: root.frosted ? 0.35 : 0
+    }
+
+    Rectangle {
+        anchors.fill: parent
+        radius: parent.radius
+        color: "transparent"
+        border.color: Qt.rgba(1, 1, 1, 0.12)
+        border.width: root.frosted ? 1 : 0
+    }
 
     Rectangle {
         id: interactiveView
 
-        anchors.centerIn: parent
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.horizontalCenter: root.fillWidth ? undefined : parent.horizontalCenter
+        anchors.left: root.fillWidth ? parent.left : undefined
+        anchors.right: root.fillWidth ? parent.right : undefined
+        anchors.leftMargin: root.fillWidth ? root.spacing : 0
+        anchors.rightMargin: root.fillWidth ? root.spacing : 0
 
-        width: contentLoader.implicitWidth
+        width: root.fillWidth ? undefined : contentLoader.implicitWidth
         height: contentLoader.implicitHeight
-        anchors.margins: Appearance.padding.smallest
 
         radius: Appearance.defaults.rounding
-        color: root.active ? Appearance.defaults.color.primary : root.hovered ? Appearance.defaults.color.secondary : Appearance.defaults.color.secondaryContainer
+        color: root.active ? Appearance.defaults.primaryColor : root.hovered ? Appearance.defaults.primaryColor : root.frosted ? Qt.rgba(1, 1, 1, 0.15) : Appearance.defaults.surfaceColor
 
         Loader {
             id: contentLoader
+            anchors.fill: root.fillWidth ? parent : undefined
         }
 
         MouseArea {
@@ -52,7 +74,7 @@ Rectangle {
                 if (!root.popoutManagerExempt) {
                     PopOutManager.hideCurrent();
                 }
-                root.clicked()
+                root.clicked();
             }
         }
     }

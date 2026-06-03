@@ -48,7 +48,7 @@ Column {
             width: root._maxEntryWidth
             height: optionRow.implicitHeight + 2 * Appearance.defaults.vPadding
             radius: Appearance.defaults.rounding
-            color: _hovered ? Appearance.defaults.color.secondary : "transparent"
+            color: _hovered ? Appearance.defaults.surfaceColor : "transparent"
 
             Row {
                 id: optionRow
@@ -57,31 +57,31 @@ Column {
                 anchors.verticalCenter: parent.verticalCenter
                 spacing: Appearance.spacing.small
 
-                    MaterialIcon {
-                        text: modelData.icon
-                        hovered: parent.parent._hovered
-                        active: false
-                        anchors.verticalCenter: parent.verticalCenter
-                    }
+                MaterialIcon {
+                    text: modelData.icon
+                    hovered: parent.parent._hovered
+                    active: false
+                    anchors.verticalCenter: parent.verticalCenter
+                }
 
-                    StyledText {
-                        text: modelData.text
-                        hovered: parent.parent._hovered
-                        active: false
-                        anchors.verticalCenter: parent.verticalCenter
-                    }
+                StyledText {
+                    text: modelData.text
+                    hovered: parent.parent._hovered
+                    active: false
+                    anchors.verticalCenter: parent.verticalCenter
+                }
             }
 
             MouseArea {
                 anchors.fill: parent
                 hoverEnabled: true
                 cursorShape: Qt.PointingHandCursor
-                    onEntered: {
-                        parent._hovered = true;
-                    }
-                    onExited: {
-                        parent._hovered = false;
-                    }
+                onEntered: {
+                    parent._hovered = true;
+                }
+                onExited: {
+                    parent._hovered = false;
+                }
                 onClicked: {
                     if (modelData.cmd)
                         Quickshell.execDetached(modelData.cmd);

@@ -1,5 +1,4 @@
 import QtQuick
-import QtQuick.Effects
 import QtQuick.Layouts
 import Quickshell.Io
 import "./../../config"
@@ -38,17 +37,6 @@ Rectangle {
         }
     }
 
-    MultiEffect {
-        anchors.fill: parent
-        visible: root.activeState
-        source: wallpaperImage
-        blurEnabled: true
-        blur: 1.0
-        blurMax: 64
-        saturation: 0.3
-        brightness: -0.15
-    }
-
     MouseArea {
         anchors.fill: parent
         hoverEnabled: true
@@ -68,19 +56,74 @@ Rectangle {
         }
     }
 
-    ColumnLayout {
+    Rectangle {
+        id: backgroundRect
         visible: root.activeState
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
-
-        BigClock {
-            Layout.alignment: Qt.AlignHCenter
+        anchors.centerIn: parent
+        width: colLayout.width + Appearance.padding.large * 2
+        height: colLayout.height + Appearance.padding.large * 2
+        radius: Appearance.defaults.rounding
+        color: {
+            var c = Appearance.defaults.color.surfaceVariant;
+            return c + "CC";
         }
 
-        LockPassword {
-            id: passwordComponent
-            Layout.alignment: Qt.AlignHCenter
-            context: root.context
+        ColumnLayout {
+            id: colLayout
+            anchors.centerIn: parent
+            width: implicitWidth
+
+            BigClock {
+                Layout.alignment: Qt.AlignHCenter
+            }
+
+            LockPassword {
+                id: passwordComponent
+                Layout.alignment: Qt.AlignHCenter
+                context: root.context
+            }
+
+            Item {
+                Layout.alignment: Qt.AlignRight
+                Layout.topMargin: Appearance.spacing.normal
+
+                MaterialIconPadded {
+                    id: powerBtn
+                    text: "\uE8AC"
+                }
+
+                MouseArea {
+                    anchors.fill: powerBtn
+                    onClicked: powerMenu.visible = !powerMenu.visible
+                }
+
+                Rectangle {
+                    id: powerMenu
+                    visible: false
+                    anchors.bottom: powerBtn.top
+                    anchors.right: powerBtn.right
+                    anchors.bottomMargin: Appearance.spacing.small
+                    radius: Appearance.defaults.rounding
+                    color: Appearance.defaults.color.surfaceVariant
+
+                    MenuList {
+                        model: [
+                            QtObject {
+                                property string icon: "restart_alt"
+                                property string text: "Restart"
+                                property var cmd: ["systemctl", "reboot"]
+                                property var action: () => powerMenu.visible = false
+                            },
+                            QtObject {
+                                property string icon: "power_off"
+                                property string text: "Shutdown"
+                                property var cmd: ["systemctl", "poweroff"]
+                                property var action: () => powerMenu.visible = false
+                            }
+                        ]
+                    }
+                }
+            }
         }
     }
 
@@ -88,6 +131,12 @@ Rectangle {
         sequence: "Escape"
         enabled: root.activeState
         onActivated: root.deactivate()
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        visible: powerMenu.visible
+        onClicked: powerMenu.visible = false
     }
 
     function activate() {

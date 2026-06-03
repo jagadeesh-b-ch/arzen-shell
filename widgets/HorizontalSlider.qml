@@ -23,7 +23,7 @@ PopOutWindow {
         value: sliderPopout.slideValue
 
         handle: Rectangle {
-            color: Appearance.defaults.color.primary
+            color: Appearance.defaults.primaryColor
             width: 16
             height: 16
             radius: 16 / 2
@@ -38,7 +38,7 @@ PopOutWindow {
                 id: filledGroove
                 height: 4
                 radius: 2
-                color: Appearance.defaults.color.primary
+                color: Appearance.defaults.primaryColor
                 anchors.verticalCenter: parent.verticalCenter
                 width: slider.visualPosition * slider.width
             }
@@ -46,7 +46,7 @@ PopOutWindow {
                 id: unfilledGroove
                 height: 4
                 radius: 2
-                color: Appearance.defaults.color.text
+                color: Appearance.defaults.contentOnPrimaryColor
                 anchors.verticalCenter: parent.verticalCenter
                 x: filledGroove.width
                 width: slider.width - filledGroove.width

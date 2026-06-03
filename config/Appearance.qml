@@ -15,6 +15,7 @@ Singleton {
     readonly property Anim anim: Anim {}
     readonly property FontFamily fontFamily: FontFamily {}
     readonly property FontSize fontSize: FontSize {}
+    readonly property Color color: Color {}
     readonly property Defaults defaults: Defaults {}
 
     readonly property string colorsJsonPath: `${Paths.state}/wallpaper/colors.json`.slice(7)
@@ -138,13 +139,20 @@ Singleton {
     }
 
     component Defaults: QtObject {
+        readonly property Color color: Color {}
         readonly property int hPadding: root.padding.normal
         readonly property int vPadding: root.padding.small
-        readonly property Color color: Color {}
         readonly property int rounding: root.rounding.normal
         readonly property int spacing: root.spacing.small
         readonly property string fontFamily: root.fontFamily.mono
         readonly property int fontSize: root.fontSize.small
+        readonly property string backgroundColor: root.color.background
+        readonly property string contentOnBackgroundColor: root.color.contentOnBackground
+        readonly property string surfaceColor: root.color.primaryContainer
+        readonly property string contentOnSurfaceColor: root.color.contentOnPrimaryContainer
+        readonly property string primaryColor: root.color.primary
+        readonly property string contentOnPrimaryColor: root.color.contentOnPrimary
+        readonly property string outlineColor: root.color.outline
     }
 
     component Color: QtObject {

@@ -9,6 +9,9 @@ TextField {
     property int pointSize: Appearance.defaults.fontSize
     property int displayLength: 32
     property real letterSpacing: 0
+    property string surfaceBackground: Appearance.defaults.surfaceColor
+    property string outlineBackground: Appearance.defaults.outlineColor
+    property string focusOutlineBackground: Appearance.defaults.primaryColor
 
     font.family: Appearance.defaults.fontFamily
     font.pointSize: pointSize
@@ -19,18 +22,19 @@ TextField {
     padding: Appearance.padding.large
     implicitWidth: {
         var txt = "";
-        for (var i = 0; i < displayLength; i++) txt += "W";
+        for (var i = 0; i < displayLength; i++)
+            txt += "W";
         return fontMetrics.advanceWidth(txt) + padding * 2;
     }
     implicitHeight: fontMetrics.height + padding * 2
 
-    color: Appearance.defaults.color.contentOnSurface
-    placeholderTextColor: Appearance.defaults.color.outline
+    color: Appearance.defaults.contentOnSurfaceColor
+    placeholderTextColor: Appearance.defaults.outlineColor
 
     background: Rectangle {
-        color: Appearance.defaults.color.surface
+        color: root.surfaceBackground
         radius: Appearance.defaults.rounding
-        border.color: root.activeFocus ? Appearance.defaults.color.primary : Appearance.defaults.color.outline
+        border.color: root.activeFocus ? root.focusOutlineBackground : root.outlineBackground
         border.width: 1
     }
 

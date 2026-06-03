@@ -1,4 +1,5 @@
 module services
+singleton Applications Applications.qml
 singleton Audio Audio.qml
 singleton Bluetooth Bluetooth.qml
 singleton Brightness Brightness.qml

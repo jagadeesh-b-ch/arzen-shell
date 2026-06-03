@@ -5,10 +5,12 @@ HorizontalSlider HorizontalSlider.qml
 InteractiveView InteractiveView.qml
 MaterialIcon MaterialIcon.qml
 MaterialIconPadded MaterialIconPadded.qml
+MenuList MenuList.qml
 MenuOptionList MenuOptionList.qml
 PopOutWindow PopOutWindow.qml
 StyledText StyledText.qml
 StyledTextField StyledTextField.qml
 StyledTextPadded StyledTextPadded.qml
 StyledView StyledView.qml
+FrostedGlass FrostedGlass.qml
 StyledWindow StyledWindow.qml

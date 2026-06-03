@@ -64,7 +64,7 @@ PopupWindow {
         id: popOutView
         anchors.fill: parent
         radius: Appearance.defaults.rounding
-        color: Appearance.defaults.color.secondaryContainer
+        color: Appearance.defaults.surfaceColor
 
         default property alias content: contentLoader.sourceComponent
 
