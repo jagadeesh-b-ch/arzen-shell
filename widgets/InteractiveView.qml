@@ -23,14 +23,14 @@ Rectangle {
 
     Rectangle {
         anchors.fill: parent
-        radius: parent.radius
+        radius: root.radius
         color: Appearance.defaults.surfaceColor
         opacity: root.frosted ? 0.35 : 0
     }
 
     Rectangle {
         anchors.fill: parent
-        radius: parent.radius
+        radius: root.radius
         color: "transparent"
         border.color: Qt.rgba(1, 1, 1, 0.12)
         border.width: root.frosted ? 1 : 0

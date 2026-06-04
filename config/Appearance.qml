@@ -25,8 +25,8 @@ Singleton {
             var data = JSON.parse(text);
             if (!data || !data.colors)
                 return;
-            root.defaults.color.apply(data.colors);
-            updateHyprctlBorders(root.defaults.color);
+            root.color.apply(data.colors);
+            updateHyprctlBorders(root.color);
         } catch (e) {
             // JSON parse failed, will retry
         }
@@ -38,7 +38,7 @@ Singleton {
         };
         var activeColor = rgba(colors.primary, "EE");
         var activeGradient = rgba(colors.primaryContainer, "99");
-        var inactiveColor = rgba(colors.surface_variant, "AA");
+        var inactiveColor = rgba(colors.surfaceVariant, "AA");
         if (activeGradient)
             Quickshell.execDetached(["hyprctl", "eval", "hl.config({ general = { col = { active_border = { colors = { \"" + activeColor + "\", \"" + activeGradient + "\" }, angle = 45 } } } })"]);
         else if (activeColor)
@@ -48,7 +48,7 @@ Singleton {
     }
 
     Component.onCompleted: {
-        updateHyprctlBorders(root.defaults.color);
+        updateHyprctlBorders(root.color);
     }
 
     FileView {
@@ -139,7 +139,7 @@ Singleton {
     }
 
     component Defaults: QtObject {
-        readonly property Color color: Color {}
+        readonly property Color color: root.color
         readonly property int hPadding: root.padding.normal
         readonly property int vPadding: root.padding.small
         readonly property int rounding: root.rounding.normal
