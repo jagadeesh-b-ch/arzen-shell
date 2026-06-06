@@ -13,7 +13,17 @@ InteractiveView {
     readonly property int entryPadding: Appearance.padding.normal
 
     fillWidth: true
-    active: isSelected
+    active: isSelected && ignoreHover
+
+    readonly property real iconSize: 32
+
+    readonly property real _entryWidth: {
+        if (!root.entry) return 0;
+        var nameW = root.entry.name.length * (Appearance.fontSize.larger * 0.55);
+        return root.iconSize + Appearance.padding.small + nameW + root.entryPadding * 2;
+    }
+
+    implicitWidth: _entryWidth
 
     content: Item {
         id: contentItem
@@ -56,7 +66,7 @@ InteractiveView {
                     text: root.entry.name
                     font.pixelSize: Appearance.fontSize.larger
                     active: root.active
-                    hovered: root.hovered
+                    hovered: root.ignoreHover ? false : root.hovered
                 }
 
                 StyledText {
@@ -64,7 +74,7 @@ InteractiveView {
                     text: root.entry.genericName || root.entry.comment || " "
                     font.pixelSize: Appearance.fontSize.normal
                     active: root.active
-                    hovered: root.hovered
+                    hovered: root.ignoreHover ? false : root.hovered
                     opacity: root.entry.genericName || root.entry.comment ? 0.7 : 0
                 }
             }

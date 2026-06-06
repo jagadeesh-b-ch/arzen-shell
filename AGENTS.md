@@ -11,7 +11,7 @@ Part of `~/.config` dotfiles repo (see `../AGENTS.md` for broader context).
 
 ## Verifying changes
 After modifying any UI file (modules, widgets, services, config), run the relevant command to check for QML errors:
-- Shell changes: `quickshell` (kill existing instance first). After verifying there are no errors, leave quickshell running — do NOT kill it.
+- Shell changes: `quickshell` (kill existing instance first). After verifying there are no errors, leave quickshell running — do NOT kill it. Use `nohup quickshell > /dev/null 2>&1 & disown` to avoid the process being killed when the shell session ends.
 - Locker changes: `quickshell -p ~/Projects/arzen-shell/lock.qml` (use `nohup ... & disown` — do NOT kill the locker process, as Hyprland treats that as a crash and locks the user out; the user will unlock it manually)
 Fix any errors reported before considering the change complete.
 

@@ -36,26 +36,23 @@ Item {
         hostWidth: powerControl.width
         hostHeight: powerControl.height
 
-        implicitWidth: optionsWrapper.width
-        implicitHeight: optionsWrapper.height
+        implicitWidth: optionsMenu.width
+        implicitHeight: optionsMenu.height
 
         Item {
             id: optionsWrapper
-            width: optionsMenu.width + 2 * Appearance.defaults.hPadding
-            height: optionsMenu.height + 2 * Appearance.defaults.vPadding
+            width: optionsMenu.width
+            height: optionsMenu.height
 
-            MenuOptionList {
+            MenuList {
                 id: optionsMenu
-                x: Appearance.defaults.hPadding
-                y: Appearance.defaults.vPadding
-                model: [
-                    QtObject { property string icon: "lock"; property string text: "Lock"; property var cmd: ["quickshell", "-p", "/home/jaggu/Projects/arzen-shell/lock.qml"] },
-                    QtObject { property string icon: "logout"; property string text: "Log off"; property var cmd: ["loginctl", "terminate-user", "$USER"] },
-                    QtObject { property string icon: "nightlight"; property string text: "Suspend"; property var cmd: ["systemctl", "suspend"] },
-                    QtObject { property string icon: "bedtime"; property string text: "Hibernate"; property var cmd: ["systemctl", "hibernate"] },
-                    QtObject { property string icon: "restart_alt"; property string text: "Restart"; property var cmd: ["systemctl", "reboot"] },
-                    QtObject { property string icon: "power_off"; property string text: "Shutdown"; property var cmd: ["systemctl", "poweroff"] }
-                ]
+
+                PowerMenuEntry { icon: "lock"; text: "Lock"; cmd: ["quickshell", "-p", "/home/jaggu/Projects/arzen-shell/lock.qml"] }
+                PowerMenuEntry { icon: "logout"; text: "Log off"; cmd: ["loginctl", "terminate-user", "$USER"] }
+                PowerMenuEntry { icon: "nightlight"; text: "Suspend"; cmd: ["systemctl", "suspend"] }
+                PowerMenuEntry { icon: "bedtime"; text: "Hibernate"; cmd: ["systemctl", "hibernate"] }
+                PowerMenuEntry { icon: "restart_alt"; text: "Restart"; cmd: ["systemctl", "reboot"] }
+                PowerMenuEntry { icon: "power_off"; text: "Shutdown"; cmd: ["systemctl", "poweroff"] }
             }
         }
     }

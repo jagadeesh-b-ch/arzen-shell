@@ -64,7 +64,22 @@ PopupWindow {
         id: popOutView
         anchors.fill: parent
         radius: Appearance.defaults.rounding
-        color: Appearance.defaults.surfaceColor
+        color: "transparent"
+
+        Rectangle {
+            anchors.fill: parent
+            radius: parent.radius
+            color: Appearance.defaults.surfaceColor
+            opacity: 0.35
+        }
+
+        Rectangle {
+            anchors.fill: parent
+            radius: parent.radius
+            color: "transparent"
+            border.color: Qt.rgba(1, 1, 1, 0.12)
+            border.width: 1
+        }
 
         default property alias content: contentLoader.sourceComponent
 

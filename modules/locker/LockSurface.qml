@@ -107,20 +107,8 @@ Rectangle {
                     color: Appearance.defaults.color.surfaceVariant
 
                     MenuList {
-                        model: [
-                            QtObject {
-                                property string icon: "restart_alt"
-                                property string text: "Restart"
-                                property var cmd: ["systemctl", "reboot"]
-                                property var action: () => powerMenu.visible = false
-                            },
-                            QtObject {
-                                property string icon: "power_off"
-                                property string text: "Shutdown"
-                                property var cmd: ["systemctl", "poweroff"]
-                                property var action: () => powerMenu.visible = false
-                            }
-                        ]
+                        PowerMenuEntry { icon: "restart_alt"; text: "Restart"; cmd: ["systemctl", "reboot"] }
+                        PowerMenuEntry { icon: "power_off"; text: "Shutdown"; cmd: ["systemctl", "poweroff"] }
                     }
                 }
             }

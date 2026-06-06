@@ -8,6 +8,7 @@ Rectangle {
     property int spacing: 0
     property bool active: false
     property bool hovered: false
+    property bool ignoreHover: false
     property bool popoutManagerExempt: false
     property bool frosted: true
     property bool fillWidth: false
@@ -50,7 +51,7 @@ Rectangle {
         height: contentLoader.implicitHeight
 
         radius: Appearance.defaults.rounding
-        color: root.active ? Appearance.defaults.primaryColor : root.hovered ? Appearance.defaults.primaryColor : root.frosted ? Qt.rgba(1, 1, 1, 0.15) : Appearance.defaults.surfaceColor
+        color: root.active ? Appearance.defaults.primaryColor : (!root.ignoreHover && root.hovered) ? Appearance.defaults.primaryColor : root.frosted ? Qt.rgba(1, 1, 1, 0.15) : Appearance.defaults.surfaceColor
 
         Loader {
             id: contentLoader

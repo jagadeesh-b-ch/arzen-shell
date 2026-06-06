@@ -1,75 +1,88 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
-import Quickshell
+import QtQuick.Controls
 import "./../config"
 
-StyledView {
+Rectangle {
     id: root
-    spacing: 0
+    property bool frosted: true
+    property int maxVisible: -1
+    property bool fillWidth: false
+    default property alias entries: container.data
+    readonly property alias listContainer: container
 
-    property list<QtObject> model: []
-    property int fontPointSize: Appearance.defaults.fontSize
-    property int itemSpacing: Appearance.spacing.small
+    radius: Appearance.defaults.rounding
+    color: root.frosted ? "transparent" : Appearance.defaults.surfaceColor
 
-    Column {
-        spacing: Appearance.padding.smallest
+    Rectangle {
+        anchors.fill: parent
+        radius: parent.radius
+        color: Appearance.defaults.surfaceColor
+        opacity: root.frosted ? 0.35 : 0
+    }
 
-        TextMetrics {
-            id: textMetrics
-            font.family: Appearance.defaults.fontFamily
+    Rectangle {
+        anchors.fill: parent
+        radius: parent.radius
+        color: "transparent"
+        border.color: Qt.rgba(1, 1, 1, 0.12)
+        border.width: root.frosted ? 1 : 0
+    }
+
+    readonly property real _avgEntryHeight: container.implicitHeight / Math.max(1, container.children.length)
+    readonly property real _listHeight: root.maxVisible > 0 ? Math.min(container.implicitHeight, _avgEntryHeight * root.maxVisible) : container.implicitHeight
+
+    function ensureVisible(index: int): void {
+        var child = container.children[index];
+        if (!child) return;
+        var itemTop = child.y;
+        var itemBottom = itemTop + child.height;
+        if (itemTop < flick.contentY)
+            flick.contentY = itemTop;
+        else if (itemBottom > flick.contentY + flick.height)
+            flick.contentY = itemBottom - flick.height;
+    }
+
+    Flickable {
+        id: flick
+        x: Appearance.defaults.hPadding
+        y: Appearance.defaults.vPadding
+        width: root.fillWidth ? root.width - 2 * Appearance.defaults.hPadding : container.width
+        height: _listHeight
+        contentWidth: container.width
+        contentHeight: container.implicitHeight
+        clip: true
+        boundsBehavior: Flickable.StopAtBounds
+        ScrollBar.vertical: ScrollBar {
+            policy: ScrollBar.AsNeeded
         }
 
-        TextMetrics {
-            id: iconMetrics
-            font.family: Appearance.fontFamily.material
-        }
+        Column {
+            id: container
+            spacing: Appearance.padding.smallest
 
-        Repeater {
-            model: root.model
+            onChildrenChanged: Qt.callLater(adjustWidths)
+            Component.onCompleted: Qt.callLater(adjustWidths)
 
-            delegate: InteractiveView {
-                id: delegateRoot
-                required property QtObject modelData
-                spacing: Appearance.padding.small
-
-                content: Column {
-                    Item { height: Appearance.padding.small; width: 1 }
-
-                    Row {
-                        spacing: root.itemSpacing
-
-                        Item { width: Appearance.defaults.hPadding; height: 1 }
-
-                        MaterialIcon {
-                            id: iconItem
-                            text: delegateRoot.modelData.icon
-                            font.pointSize: root.fontPointSize
-                            hovered: delegateRoot.hovered
-                            active: delegateRoot.active
-                        }
-
-                        StyledText {
-                            id: textItem
-                            text: delegateRoot.modelData.text
-                            font.pointSize: root.fontPointSize
-                            hovered: delegateRoot.hovered
-                            active: delegateRoot.active
-                        }
-
-                        Item { width: Appearance.defaults.hPadding; height: 1 }
-                    }
-
-                    Item { height: Appearance.padding.small; width: 1 }
+            function adjustWidths() {
+                var children = container.children;
+                var maxW = 0;
+                var i;
+                for (i = 0; i < children.length; i++) {
+                    var w = children[i].implicitWidth;
+                    if (w > maxW) maxW = w;
                 }
-
-                onClicked: {
-                    if (delegateRoot.modelData.cmd)
-                        Quickshell.execDetached(delegateRoot.modelData.cmd);
-                    if (delegateRoot.modelData.action)
-                        delegateRoot.modelData.action();
-                }
+                if (root.fillWidth && flick.width > maxW)
+                    container.width = flick.width;
+                else
+                    container.width = maxW;
+                for (i = 0; i < children.length; i++)
+                    children[i].width = container.width;
             }
         }
     }
+
+    width: root.fillWidth && parent ? Math.max(container.width + 2 * Appearance.defaults.hPadding, parent.width) : container.width + 2 * Appearance.defaults.hPadding
+    height: flick.y + _listHeight + Appearance.defaults.vPadding
 }

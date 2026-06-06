@@ -11,8 +11,8 @@ PanelWindow {
     id: popup
 
     property int popupWidth: Screen.width / 2
-    property int popupHeight: Screen.height / 2
     property int selectedIndex: 0
+    property bool keyboardActive: false
     property var filteredApps: []
 
     color: "transparent"
@@ -39,15 +39,16 @@ PanelWindow {
         }
     }
 
-    ListModel {
-        id: appModel
+    Component {
+        id: appEntryComponent
+        AppEntry {}
     }
 
     Connections {
         target: Applications
         function onAppsReadyChanged() {
             if (visible && Applications.appsReady)
-                populateModel(searchInput.text);
+                populateMenu(searchInput.text);
         }
     }
 
@@ -59,9 +60,10 @@ PanelWindow {
     function show() {
         searchInput.text = "";
         selectedIndex = 0;
+        keyboardActive = true;
         visible = true;
         if (Applications.appsReady)
-            populateModel("");
+            populateMenu("");
         Qt.callLater(function () {
             searchInput.forceActiveFocus();
         });
@@ -76,21 +78,51 @@ PanelWindow {
         onActivated: popup.visible = false
     }
 
-    function populateModel(query) {
-        appModel.clear();
+    function populateMenu(query) {
+        var i;
+        for (i = appMenuList.entries.length - 1; i >= 0; i--)
+            appMenuList.entries[i].destroy();
+
         filteredApps = Applications.filterApps(query);
-        for (var i = 0; i < filteredApps.length; i++)
-            appModel.append({ entry: filteredApps[i] });
-        if (selectedIndex >= appModel.count)
-            selectedIndex = Math.max(0, appModel.count - 1);
+        for (i = 0; i < filteredApps.length; i++) {
+            var entry = appEntryComponent.createObject(appMenuList.listContainer, {
+                entry: filteredApps[i],
+                isSelected: i === selectedIndex,
+                ignoreHover: keyboardActive
+            });
+            if (entry) {
+                (function(entry, idx) {
+                    entry.hover.connect(function(hovered) {
+                        if (hovered) {
+                            keyboardActive = false;
+                            selectedIndex = idx;
+                            updateSelection();
+                        }
+                    });
+                    entry.clicked.connect(function() {
+                        selectedIndex = idx;
+                        launchSelected();
+                    });
+                })(entry, i);
+            }
+        }
+        if (selectedIndex >= filteredApps.length)
+            selectedIndex = Math.max(0, filteredApps.length - 1);
     }
 
     function launchSelected() {
-        if (selectedIndex >= 0 && selectedIndex < appModel.count) {
-            var app = appModel.get(selectedIndex).entry;
-            Applications.launch(app);
-        }
+        if (selectedIndex >= 0 && selectedIndex < filteredApps.length)
+            Applications.launch(filteredApps[selectedIndex]);
         popup.visible = false;
+    }
+
+    function updateSelection() {
+        var children = appMenuList.entries;
+        for (var i = 0; i < children.length; i++) {
+            children[i].isSelected = i === selectedIndex;
+            children[i].ignoreHover = keyboardActive;
+        }
+        appMenuList.ensureVisible(selectedIndex);
     }
 
     MouseArea {
@@ -105,7 +137,7 @@ PanelWindow {
     Rectangle {
         id: popupContent
         width: popupWidth
-        height: popupHeight
+        height: contentColumn.implicitHeight + 2 * Appearance.padding.normal
         anchors.centerIn: parent
         radius: Appearance.defaults.rounding
         color: "transparent"
@@ -126,6 +158,7 @@ PanelWindow {
         }
 
         Column {
+            id: contentColumn
             anchors.fill: parent
             anchors.margins: Appearance.padding.normal
             spacing: Appearance.spacing.small
@@ -140,15 +173,17 @@ PanelWindow {
 
                 Keys.onPressed: function (event) {
                     if ((event.key === Qt.Key_J && (event.modifiers & Qt.ControlModifier)) || event.key === Qt.Key_Down) {
-                        if (selectedIndex < appModel.count - 1) {
+                        if (selectedIndex < filteredApps.length - 1) {
                             selectedIndex++;
-                            listView.positionViewAtIndex(selectedIndex, ListView.Contain);
+                            keyboardActive = true;
+                            updateSelection();
                         }
                         event.accepted = true;
                     } else if ((event.key === Qt.Key_K && (event.modifiers & Qt.ControlModifier)) || event.key === Qt.Key_Up) {
                         if (selectedIndex > 0) {
                             selectedIndex--;
-                            listView.positionViewAtIndex(selectedIndex, ListView.Contain);
+                            keyboardActive = true;
+                            updateSelection();
                         }
                         event.accepted = true;
                     } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
@@ -162,7 +197,8 @@ PanelWindow {
 
                 onTextChanged: {
                     selectedIndex = 0;
-                    populateModel(text);
+                    keyboardActive = true;
+                    populateMenu(text);
                 }
             }
 
@@ -172,23 +208,10 @@ PanelWindow {
                 color: Appearance.defaults.color.outline
             }
 
-            ListView {
-                id: listView
-                width: parent.width
-                height: parent.height - searchInput.height - 1 - Appearance.spacing.small
-                clip: true
-                model: appModel
-                boundsBehavior: Flickable.StopAtBounds
-
-                delegate: AppEntry {
-                    width: listView.width
-                    entry: model.entry
-                    isSelected: index === selectedIndex
-                    onClicked: {
-                        selectedIndex = index;
-                        launchSelected();
-                    }
-                }
+            MenuList {
+                id: appMenuList
+                maxVisible: 5
+                fillWidth: true
             }
         }
     }
