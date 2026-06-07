@@ -40,6 +40,7 @@ Item {
 
                 StyledTextPadded {
                     text: root.readableVolume
+                    leftPadding: Appearance.padding.smaller
                     rightPadding: 0
                     Layout.preferredWidth: volumeContent.fixedTextWidth
                     horizontalAlignment: Text.AlignRight
@@ -52,6 +53,7 @@ Item {
                     id: volumeIcon
                     text: Icons.getVolumeIcon(root.readableVolume)
                     leftPadding: 0
+                    rightPadding: Appearance.padding.smaller
                     active: volumeView.active
                     hovered: volumeView.hovered
                     Layout.alignment: Qt.AlignVCenter

@@ -1,10 +1,12 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import QtQml
 import QtQuick.Controls
 import "./../config"
+import "./../widgets"
 
-Rectangle {
+Item {
     id: root
     property bool frosted: true
     property int maxVisible: -1
@@ -12,26 +14,26 @@ Rectangle {
     default property alias entries: container.data
     readonly property alias listContainer: container
 
-    radius: Appearance.defaults.rounding
-    color: root.frosted ? "transparent" : Appearance.defaults.surfaceColor
-
-    Rectangle {
-        anchors.fill: parent
-        radius: parent.radius
-        color: Appearance.defaults.surfaceColor
-        opacity: root.frosted ? 0.35 : 0
+    StyledView {
+        id: bg
+        z: 0
+        spacing: 0
+        frosted: root.frosted
     }
 
-    Rectangle {
-        anchors.fill: parent
-        radius: parent.radius
-        color: "transparent"
-        border.color: Qt.rgba(1, 1, 1, 0.12)
-        border.width: root.frosted ? 1 : 0
-    }
+    Binding { target: bg; property: "width"; value: root.width }
+    Binding { target: bg; property: "height"; value: root.height }
 
     readonly property real _avgEntryHeight: container.implicitHeight / Math.max(1, container.children.length)
     readonly property real _listHeight: root.maxVisible > 0 ? Math.min(container.implicitHeight, _avgEntryHeight * root.maxVisible) : container.implicitHeight
+    property real _capturedFullHeight: -1
+
+    on_ListHeightChanged: {
+        if (_capturedFullHeight < 0 && root.maxVisible > 0 && container.children.length >= root.maxVisible)
+            _capturedFullHeight = _listHeight;
+    }
+
+    readonly property real _displayHeight: _capturedFullHeight > 0 ? Math.max(_listHeight, _capturedFullHeight) : _listHeight
 
     function ensureVisible(index: int): void {
         var child = container.children[index];
@@ -49,7 +51,7 @@ Rectangle {
         x: Appearance.defaults.hPadding
         y: Appearance.defaults.vPadding
         width: root.fillWidth ? root.width - 2 * Appearance.defaults.hPadding : container.width
-        height: _listHeight
+        height: _displayHeight
         contentWidth: container.width
         contentHeight: container.implicitHeight
         clip: true
@@ -84,5 +86,5 @@ Rectangle {
     }
 
     width: root.fillWidth && parent ? Math.max(container.width + 2 * Appearance.defaults.hPadding, parent.width) : container.width + 2 * Appearance.defaults.hPadding
-    height: flick.y + _listHeight + Appearance.defaults.vPadding
+    height: flick.y + _displayHeight + Appearance.defaults.vPadding
 }

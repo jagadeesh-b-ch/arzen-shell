@@ -153,6 +153,7 @@ Singleton {
         readonly property string primaryColor: root.color.primary
         readonly property string contentOnPrimaryColor: root.color.contentOnPrimary
         readonly property string outlineColor: root.color.outline
+        readonly property real frostedOpacity: 1.0
     }
 
     component Color: QtObject {

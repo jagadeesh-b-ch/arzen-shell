@@ -12,19 +12,23 @@ Item {
     id: pickerWindow
   }
 
-  width: wallpaperButton.width
-  height: wallpaperButton.height
+  width: styledView.width
+  height: styledView.height
 
-  InteractiveView {
-    id: wallpaperButton
-    popoutManagerExempt: true
+  StyledView {
+    id: styledView
+    spacing: 0
+    content: InteractiveView {
+      id: wallpaperButton
+      popoutManagerExempt: true
 
-    content: MaterialIconPadded {
-      text: "\uE3B6"
-      active: wallpaperButton.active
-      hovered: wallpaperButton.hovered
+      content: MaterialIconPadded {
+        text: "\uE3B6"
+        active: wallpaperButton.active
+        hovered: wallpaperButton.hovered
+      }
+
+      onClicked: pickerWindow.showPicker(root.currentScreen)
     }
-
-    onClicked: pickerWindow.showPicker(root.currentScreen)
   }
 }

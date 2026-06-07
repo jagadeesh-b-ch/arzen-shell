@@ -46,7 +46,6 @@ Item {
 
             MenuList {
                 id: optionsMenu
-                color: "transparent"
                 frosted: false
 
                 PowerMenuEntry { icon: "lock"; text: "Lock"; cmd: ["quickshell", "-p", "/home/jaggu/Projects/arzen-shell/lock.qml"] }

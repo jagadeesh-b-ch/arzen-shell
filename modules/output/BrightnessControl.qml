@@ -42,6 +42,7 @@ Item {
 
                 StyledTextPadded {
                     text: root.readableBrightness
+                    leftPadding: Appearance.padding.smaller
                     rightPadding: 0
                     Layout.preferredWidth: brightnessContent.fixedTextWidth
                     horizontalAlignment: Text.AlignRight
@@ -54,6 +55,7 @@ Item {
                     id: brightnessIcon
                     text: Icons.getBrightnessIcon(root.readableBrightness)
                     leftPadding: 0
+                    rightPadding: Appearance.padding.smaller
                     active: brightnessView.active
                     hovered: brightnessView.hovered
                     Layout.alignment: Qt.AlignVCenter

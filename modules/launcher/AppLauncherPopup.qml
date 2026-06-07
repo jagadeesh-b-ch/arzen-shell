@@ -28,6 +28,17 @@ PanelWindow {
     anchors.left: true
     anchors.right: true
 
+    Item {
+        anchors.fill: parent
+        opacity: 0.3
+
+        Rectangle {
+            anchors.fill: parent
+            color: Appearance.defaults.backgroundColor
+            opacity: Appearance.defaults.frostedOpacity
+        }
+    }
+
     IpcHandler {
         target: "launcher"
         function open(): void {
@@ -48,24 +59,24 @@ PanelWindow {
         target: Applications
         function onAppsReadyChanged() {
             if (visible && Applications.appsReady)
-                populateMenu(searchInput.text);
+                populateMenu(popupContent.contentItem.textInput.text);
         }
     }
 
     onVisibleChanged: {
         if (!visible)
-            searchInput.text = "";
+            popupContent.contentItem.textInput.text = "";
     }
 
     function show() {
-        searchInput.text = "";
+        popupContent.contentItem.textInput.text = "";
         selectedIndex = 0;
         keyboardActive = true;
         visible = true;
         if (Applications.appsReady)
             populateMenu("");
         Qt.callLater(function () {
-            searchInput.forceActiveFocus();
+            popupContent.contentItem.textInput.forceActiveFocus();
         });
     }
 
@@ -79,13 +90,14 @@ PanelWindow {
     }
 
     function populateMenu(query) {
+        var menu = popupContent.contentItem.menuList;
         var i;
-        for (i = appMenuList.entries.length - 1; i >= 0; i--)
-            appMenuList.entries[i].destroy();
+        for (i = menu.entries.length - 1; i >= 0; i--)
+            menu.entries[i].destroy();
 
         filteredApps = Applications.filterApps(query);
         for (i = 0; i < filteredApps.length; i++) {
-            var entry = appEntryComponent.createObject(appMenuList.listContainer, {
+            var entry = appEntryComponent.createObject(menu.listContainer, {
                 entry: filteredApps[i],
                 isSelected: i === selectedIndex,
                 ignoreHover: keyboardActive
@@ -117,12 +129,13 @@ PanelWindow {
     }
 
     function updateSelection() {
-        var children = appMenuList.entries;
+        var menu = popupContent.contentItem.menuList;
+        var children = menu.entries;
         for (var i = 0; i < children.length; i++) {
             children[i].isSelected = i === selectedIndex;
             children[i].ignoreHover = keyboardActive;
         }
-        appMenuList.ensureVisible(selectedIndex);
+        menu.ensureVisible(selectedIndex);
     }
 
     MouseArea {
@@ -134,33 +147,22 @@ PanelWindow {
         }
     }
 
-    Rectangle {
+    StyledView {
         id: popupContent
         width: popupWidth
-        height: contentColumn.implicitHeight + 2 * Appearance.padding.normal
         anchors.centerIn: parent
-        radius: Appearance.defaults.rounding
-        color: "transparent"
-
-        Rectangle {
-            anchors.fill: parent
-            radius: parent.radius
-            color: Appearance.defaults.backgroundColor
-            opacity: 0.35
-        }
-
-        Rectangle {
-            anchors.fill: parent
-            radius: parent.radius
-            color: "transparent"
-            border.color: Qt.rgba(1, 1, 1, 0.12)
-            border.width: 1
-        }
+        spacing: Appearance.padding.normal
+        fillWidth: true
+        backgroundVisible: false
+        border.color: Appearance.defaults.color.outline
+        border.width: 1
 
         Column {
-            id: contentColumn
-            anchors.fill: parent
-            anchors.margins: Appearance.padding.normal
+            id: popupColumn
+            property alias textInput: searchInput
+            property alias menuList: appMenuList
+
+            width: parent.width
             spacing: Appearance.spacing.small
 
             StyledTextField {
