@@ -42,7 +42,7 @@ Rectangle {
         anchors.fill: parent
         hoverEnabled: true
         acceptedButtons: Qt.NoButton
-        cursorShape: Qt.BlankCursor
+        cursorShape: Qt.ArrowCursor
         onPositionChanged: if (!root.activeState)
             root.activate()
     }
@@ -87,27 +87,36 @@ Rectangle {
             Item {
                 Layout.alignment: Qt.AlignRight
                 Layout.topMargin: Appearance.spacing.normal
+                implicitWidth: powerIcon.width
+                implicitHeight: powerIcon.height
 
-                MaterialIconPadded {
-                    id: powerBtn
-                    text: "\uE8AC"
-                }
+                InteractiveView {
+                    id: powerIcon
+                    popoutManagerExempt: true
 
-                MouseArea {
-                    anchors.fill: powerBtn
+                    MaterialIconPadded {
+                        text: "\uE8AC"
+                        active: powerIcon.active
+                        hovered: powerIcon.hovered
+                        font.pointSize: Appearance.fontSize.large
+                    }
+
                     onClicked: powerMenu.visible = !powerMenu.visible
                 }
 
                 Rectangle {
                     id: powerMenu
                     visible: false
-                    anchors.bottom: powerBtn.top
-                    anchors.right: powerBtn.right
-                    anchors.bottomMargin: Appearance.spacing.small
+                    anchors.top: powerIcon.bottom
+                    anchors.horizontalCenter: powerIcon.horizontalCenter
+                    anchors.topMargin: Appearance.spacing.small
+                    width: menuList.width
+                    height: menuList.height
                     radius: Appearance.defaults.rounding
                     color: Appearance.defaults.color.surfaceVariant
 
                     MenuList {
+                        id: menuList
                         PowerMenuEntry { icon: "restart_alt"; text: "Restart"; cmd: ["systemctl", "reboot"] }
                         PowerMenuEntry { icon: "power_off"; text: "Shutdown"; cmd: ["systemctl", "poweroff"] }
                     }
