@@ -14,6 +14,8 @@ Rectangle {
     property bool activeState: false
     property QtObject passwordFieldItem: null
     property Item powerIconItem: null
+    property bool suppressTextChanged: false
+    property bool firstMouseEvent: true
 
     Binding {
         target: root
@@ -50,21 +52,56 @@ Rectangle {
         }
     }
 
+    Timer {
+        id: idleTimer
+        interval: 5000
+        onTriggered: {
+            root.activeState = false;
+        }
+    }
+
     MouseArea {
         anchors.fill: parent
         hoverEnabled: true
         acceptedButtons: Qt.NoButton
         cursorShape: Qt.ArrowCursor
-        onPositionChanged: if (!root.activeState)
-            root.activate()
+        onPositionChanged: {
+            if (root.firstMouseEvent) {
+                root.firstMouseEvent = false;
+                return;
+            }
+            root.onInputActivity();
+            if (powerMenu.visible) {
+                var pos = powerMenu.mapFromItem(root, mouse.x, mouse.y);
+                if (pos.x >= 0 && pos.x <= powerMenu.width && pos.y >= 0 && pos.y <= powerMenu.height) {
+                    autoCloseTimer.stop();
+                } else {
+                    autoCloseTimer.restart();
+                }
+            }
+        }
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        visible: powerMenu.visible
+        acceptedButtons: Qt.LeftButton
+        onClicked: powerMenu.visible = false
     }
 
     Item {
         focus: !root.activeState
         Keys.onPressed: event => {
-            if (!root.activeState) {
-                root.activate();
-                event.accepted = false;
+            root.onInputActivity();
+            event.accepted = false;
+        }
+    }
+
+    Connections {
+        target: root.passwordFieldItem
+        function onTextChanged() {
+            if (!root.suppressTextChanged) {
+                idleTimer.restart();
             }
         }
     }
@@ -143,11 +180,12 @@ Rectangle {
             }
         }
 
-        MouseArea {
-            anchors.fill: parent
-            visible: powerMenu.visible
-            onClicked: powerMenu.visible = false
-        }
+    }
+
+    Timer {
+        id: autoCloseTimer
+        interval: 3000
+        onTriggered: powerMenu.visible = false
     }
 
     Shortcut {
@@ -156,16 +194,27 @@ Rectangle {
         onActivated: root.deactivate()
     }
 
+    function onInputActivity() {
+        if (!root.activeState) {
+            root.activate();
+        }
+        idleTimer.restart();
+    }
+
     function activate() {
         activeState = true;
+        idleTimer.restart();
         if (root.passwordFieldItem)
             root.passwordFieldItem.forceActiveFocus();
     }
 
     function deactivate() {
+        suppressTextChanged = true;
         activeState = false;
+        idleTimer.stop();
         if (root.passwordFieldItem)
             root.passwordFieldItem.text = "";
         root.context.currentText = "";
+        suppressTextChanged = false;
     }
 }
