@@ -12,6 +12,18 @@ Rectangle {
     color: "transparent"
 
     property bool activeState: false
+    property QtObject passwordFieldItem: null
+    property Item powerIconItem: null
+
+    Binding {
+        target: root
+        property: "powerIconItem"
+        value: {
+            var col = backgroundRect.contentItem;
+            if (!col) return null;
+            return col.children[col.children.length - 1];
+        }
+    }
 
     readonly property string wallpaperPathFile: `${Paths.state}/wallpaper/path.txt`.slice(7)
 
@@ -57,41 +69,38 @@ Rectangle {
         }
     }
 
-    Rectangle {
-        id: backgroundRect
+    Item {
+        id: popupGroup
         visible: root.activeState
         anchors.centerIn: parent
-        width: colLayout.width + Appearance.padding.large * 2
-        height: colLayout.height + Appearance.padding.large * 2
-        radius: Appearance.defaults.rounding
-        color: {
-            var c = Appearance.defaults.color.surfaceVariant;
-            return c + "CC";
-        }
+        width: backgroundRect.width
+        height: backgroundRect.height
 
-        ColumnLayout {
-            id: colLayout
-            anchors.centerIn: parent
-            width: implicitWidth
+        StyledView {
+            id: backgroundRect
+            anchors.top: parent.top
+            anchors.left: parent.left
+            spacing: Appearance.padding.large
 
-            BigClock {
-                Layout.alignment: Qt.AlignHCenter
-            }
+            ColumnLayout {
+                id: colLayout
+                width: implicitWidth
 
-            LockPassword {
-                id: passwordComponent
-                Layout.alignment: Qt.AlignHCenter
-                context: root.context
-            }
+                BigClock {
+                    Layout.alignment: Qt.AlignHCenter
+                }
 
-            Item {
-                Layout.alignment: Qt.AlignRight
-                Layout.topMargin: Appearance.spacing.normal
-                implicitWidth: powerIcon.width
-                implicitHeight: powerIcon.height
+                LockPassword {
+                    id: passwordComponent
+                    Layout.alignment: Qt.AlignHCenter
+                    context: root.context
+                    Component.onCompleted: root.passwordFieldItem = passwordField
+                }
 
                 InteractiveView {
                     id: powerIcon
+                    Layout.alignment: Qt.AlignRight
+                    Layout.topMargin: Appearance.spacing.normal
                     popoutManagerExempt: true
 
                     MaterialIconPadded {
@@ -103,25 +112,41 @@ Rectangle {
 
                     onClicked: powerMenu.visible = !powerMenu.visible
                 }
+            }
+        }
 
-                Rectangle {
-                    id: powerMenu
-                    visible: false
-                    anchors.top: powerIcon.bottom
-                    anchors.horizontalCenter: powerIcon.horizontalCenter
-                    anchors.topMargin: Appearance.spacing.small
-                    width: menuList.width
-                    height: menuList.height
-                    radius: Appearance.defaults.rounding
-                    color: Appearance.defaults.color.surfaceVariant
+        Rectangle {
+            id: powerMenu
+            visible: false
+            anchors.top: backgroundRect.bottom
+            anchors.topMargin: Appearance.spacing.small
+            width: menuList.width
+            height: menuList.height
+            radius: Appearance.defaults.rounding
+            color: Appearance.defaults.color.surfaceVariant
 
-                    MenuList {
-                        id: menuList
-                        PowerMenuEntry { icon: "restart_alt"; text: "Restart"; cmd: ["systemctl", "reboot"] }
-                        PowerMenuEntry { icon: "power_off"; text: "Shutdown"; cmd: ["systemctl", "poweroff"] }
-                    }
+            MenuList {
+                id: menuList
+                PowerMenuEntry { icon: "restart_alt"; text: "Restart"; cmd: ["systemctl", "reboot"] }
+                PowerMenuEntry { icon: "power_off"; text: "Shutdown"; cmd: ["systemctl", "poweroff"] }
+            }
+
+            Binding {
+                target: powerMenu
+                property: "x"
+                value: {
+                    var icon = root.powerIconItem;
+                    if (!icon) return 0;
+                    var pt = icon.mapToItem(popupGroup, icon.width / 2, 0);
+                    return pt.x - powerMenu.width / 2;
                 }
             }
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            visible: powerMenu.visible
+            onClicked: powerMenu.visible = false
         }
     }
 
@@ -131,20 +156,16 @@ Rectangle {
         onActivated: root.deactivate()
     }
 
-    MouseArea {
-        anchors.fill: parent
-        visible: powerMenu.visible
-        onClicked: powerMenu.visible = false
-    }
-
     function activate() {
         activeState = true;
-        passwordComponent.passwordField.forceActiveFocus();
+        if (root.passwordFieldItem)
+            root.passwordFieldItem.forceActiveFocus();
     }
 
     function deactivate() {
         activeState = false;
-        passwordComponent.passwordField.text = "";
+        if (root.passwordFieldItem)
+            root.passwordFieldItem.text = "";
         root.context.currentText = "";
     }
 }
