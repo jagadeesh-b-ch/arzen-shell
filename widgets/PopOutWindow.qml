@@ -3,6 +3,7 @@ import QtQuick.Window
 import Quickshell
 import "./../config"
 import "./../services"
+import "./../widgets"
 
 PopupWindow {
     id: popOutWindow
@@ -60,32 +61,10 @@ PopupWindow {
         }
     }
 
-    Rectangle {
+    StyledView {
         id: popOutView
         anchors.fill: parent
-        radius: Appearance.defaults.rounding
-        color: "transparent"
-
-        Rectangle {
-            anchors.fill: parent
-            radius: parent.radius
-            color: Appearance.defaults.surfaceColor
-            opacity: 0.35
-        }
-
-        Rectangle {
-            anchors.fill: parent
-            radius: parent.radius
-            color: "transparent"
-            border.color: Qt.rgba(1, 1, 1, 0.12)
-            border.width: 1
-        }
-
-        default property alias content: contentLoader.sourceComponent
-
-        Loader {
-            id: contentLoader
-        }
+        spacing: 0
     }
 
     function show() {

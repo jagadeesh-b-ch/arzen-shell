@@ -9,6 +9,7 @@ import "./../widgets"
 Item {
     id: root
     property bool frosted: true
+    property real frostedOpacity: 0.7
     property int maxVisible: -1
     property bool fillWidth: false
     default property alias entries: container.data
@@ -19,6 +20,7 @@ Item {
         z: 0
         spacing: 0
         frosted: root.frosted
+        frostedOpacity: root.frostedOpacity
     }
 
     Binding { target: bg; property: "width"; value: root.width }

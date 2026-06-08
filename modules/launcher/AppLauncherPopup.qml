@@ -154,6 +154,7 @@ PanelWindow {
         spacing: Appearance.padding.normal
         fillWidth: true
         backgroundVisible: false
+        frostedOpacity: 0.9
         border.color: Appearance.defaults.color.outline
         border.width: 1
 
@@ -214,6 +215,7 @@ PanelWindow {
                 id: appMenuList
                 maxVisible: 5
                 fillWidth: true
+                frostedOpacity: 1.0
             }
         }
     }

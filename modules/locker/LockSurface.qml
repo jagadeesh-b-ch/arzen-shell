@@ -4,6 +4,7 @@ import Quickshell.Io
 import "./../../config"
 import "./../../utils"
 import "./../../widgets"
+import "./../power"
 
 Rectangle {
     id: root
