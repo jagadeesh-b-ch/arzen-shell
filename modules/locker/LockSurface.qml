@@ -64,7 +64,7 @@ Rectangle {
         anchors.fill: parent
         hoverEnabled: true
         acceptedButtons: Qt.NoButton
-        cursorShape: Qt.ArrowCursor
+        cursorShape: root.activeState ? Qt.ArrowCursor : Qt.BlankCursor
         onPositionChanged: {
             if (root.firstMouseEvent) {
                 root.firstMouseEvent = false;
