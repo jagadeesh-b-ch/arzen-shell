@@ -72,16 +72,21 @@ Item {
         }
     }
 
-    HorizontalSlider {
+    PopOutWindow {
         id: brightnessSlider
         anchor.item: root
-
-        slideValue: root.monitor.brightness
-        onSlide: newBrightness => {
-            root.monitor.setBrightness(newBrightness);
-        }
-
         hostWidth: brightnessView.width
         hostHeight: brightnessView.height
+        implicitHeight: hostHeight + (2 * vPadding)
+        implicitWidth: (3 * hostWidth) + (2 * hPadding)
+
+        HorizontalSlider {
+            anchors.fill: parent
+            anchors.margins: Appearance.padding.smaller
+            slideValue: root.monitor.brightness
+            onSlide: newBrightness => {
+                root.monitor.setBrightness(newBrightness);
+            }
+        }
     }
 }

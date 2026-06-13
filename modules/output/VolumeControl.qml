@@ -51,7 +51,7 @@ Item {
 
                 MaterialIconPadded {
                     id: volumeIcon
-                    text: Icons.getVolumeIcon(root.readableVolume)
+                    text: Icons.getVolumeIcon(root.readableVolume, Audio.muted)
                     leftPadding: 0
                     rightPadding: Appearance.padding.smaller
                     active: volumeView.active
@@ -70,13 +70,9 @@ Item {
         }
     }
 
-    HorizontalSlider {
+    VolumePopout {
         id: volumeSlider
         anchor.item: root
-        slideValue: Audio.volume
-        onSlide: newVolume => {
-            Audio.setVolume(newVolume);
-        }
         hostWidth: volumeView.width
         hostHeight: volumeView.height
     }

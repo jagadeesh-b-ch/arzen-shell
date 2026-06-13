@@ -2,25 +2,19 @@ import QtQuick
 import QtQuick.Controls
 import "./../config"
 
-PopOutWindow {
-    id: sliderPopout
-    property int horizontalScale: 3
-    property int verticalScale: 1
-
-    implicitHeight: hostHeight + (2 * vPadding)
-    implicitWidth: (horizontalScale * hostWidth) + (2 * hPadding)
+Item {
+    id: root
 
     property real slideValue: 0
     signal slide(real newValue)
 
     Slider {
         id: slider
-        anchors.centerIn: parent
-        anchors.margins: Appearance.padding.normal
         anchors.fill: parent
+
         from: 0.0
         to: 1.0
-        value: sliderPopout.slideValue
+        value: root.slideValue
 
         handle: Rectangle {
             color: Appearance.defaults.primaryColor
@@ -53,8 +47,6 @@ PopOutWindow {
             }
         }
 
-        onMoved: {
-            sliderPopout.slide(value);
-        }
+        onMoved: root.slide(value)
     }
 }

@@ -261,7 +261,10 @@ Singleton {
         }
     }
 
-    function getVolumeIcon(percentage: int): string {
+    function getVolumeIcon(percentage: int, muted: bool): string {
+        if (muted) {
+            return "volume_off"
+        }
         if (percentage >= 75) {
             return "volume_up"
         }
